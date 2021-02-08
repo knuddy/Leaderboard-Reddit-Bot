@@ -1,6 +1,6 @@
 # StarWarsRedditBot
 
-A simple reddit bot, created in python, to count the number of times users of r/TheMandalorianTV comment the phrase "This is the way". From this data a leader is compiled and certain comments using the aforementioned phrase will be replied to with the current leaderboard standings. 
+A simple reddit bot, created in python, to count the number of times users of r/TheMandalorianTV comment the phrase "This is the way". Certain comments using the aforementioned phrase will be replied to with the current top 3 users on the leaderboard, as well as their rank overall. 
 
 Technologies Used:
 - The [PRAW](https://praw.readthedocs.io/en/latest/) library was used to interact with Reddit's API 
