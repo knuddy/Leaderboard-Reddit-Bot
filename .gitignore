@@ -1,0 +1,6 @@
+__pycache__/
+venv/
+*.pyc
+*.bat
+*.vscode
+check_db_records.py
