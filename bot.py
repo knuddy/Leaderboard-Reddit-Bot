@@ -58,6 +58,8 @@ class StarWarsBot:
         if self.db.can_make_new_post():
             self.make_new_post(character_index, username, comment)
             self.db.update_time_since_last_post()
+            print(f"Made post to user {username}")
+            sys.stdout.flush()
 
     def make_new_post(self, character_index, username, comment):
         _, usernames, scores = self.db.user_data(character_index, username)
