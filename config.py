@@ -10,6 +10,8 @@ USER_AGENT = os.environ["REDDIT_USER_AGENT"]
 
 USERNAME = os.environ["REDDIT_USERNAME"]
 
+DATABASE_URL = os.environ["DATABASE_URL"]
+
 SUBREDDIT_NAME = "TheMandalorianTV"
 
 SEARCH_TERM = "This is the way"
