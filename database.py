@@ -18,7 +18,7 @@ class Database:
         select_sql = "SELECT * FROM user_scores"
         for row in self.db.execute(select_sql):
             for username, score, added_timestamp in zip(row[1], row[2], row[3]):
-                if score > user_score and user_added_timestamp < added_timestamp: user_rank += 1
+                if score > user_score and user_added_timestamp > added_timestamp: user_rank += 1
 
                 if score > top_three[0][0] and added_timestamp < top_three[0][2]:
                     top_three = [(score, username, added_timestamp)] + top_three[:2]
