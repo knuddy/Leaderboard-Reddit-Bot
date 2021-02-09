@@ -55,9 +55,9 @@ class StarWarsBot:
                 print("new user")
                 sys.stdout.flush()
 
-        # if self.db.can_make_new_post():
-        #     self.make_new_post(character_index, username, comment)
-        #     self.db.update_time_since_last_post()
+        if self.db.can_make_new_post():
+            self.make_new_post(character_index, username, comment)
+            self.db.update_time_since_last_post()
 
     def make_new_post(self, character_index, username, comment):
         _, usernames, scores = self.db.user_data(character_index, username)
