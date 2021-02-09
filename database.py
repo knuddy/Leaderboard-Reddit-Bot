@@ -1,4 +1,5 @@
-from sqlalchemy import create_engine  
+from datetime import datetime
+from sqlalchemy import create_engine
 
 class Database:
     def __init__(self, db_string):
@@ -6,31 +7,31 @@ class Database:
         self.create_table_user_scores()
         self.create_table_time_since_last_post()
 
-    def top_three_and_user_rank(self, user_score):
+    def top_three_and_user_rank(self, user_score, user_added_timestamp):
         top_three = [
-            (0, "placeholder"),
-            (0, "placeholder"),
-            (0, "placeholder")
+            (0, "placeholder", datetime.now()),
+            (0, "placeholder", datetime.now()),
+            (0, "placeholder", datetime.now())
         ]
         user_rank = 1
 
         select_sql = "SELECT * FROM user_scores"
         for row in self.db.execute(select_sql):
-            for username, score in zip(row[1], row[2]):
-                if score > user_score: user_rank += 1
+            for username, score, added_timestamp in zip(row[1], row[2], row[3]):
+                if score > user_score and user_added_timestamp < added_timestamp: user_rank += 1
 
-                if score > top_three[0][0]:
-                    top_three = [(score, username)] + top_three[:2]
-                elif score > top_three[1][0]:
-                    top_three =  top_three[:1] + [(score, username)] + top_three[1:2]
-                elif score > top_three[2][0]:
-                    top_three = top_three[:2] + [(score, username)]
+                if score > top_three[0][0] and added_timestamp < top_three[0][2]:
+                    top_three = [(score, username, added_timestamp)] + top_three[:2]
+                elif score > top_three[1][0] and added_timestamp < top_three[1][2]:
+                    top_three =  top_three[:1] + [(score, username, added_timestamp)] + top_three[1:2]
+                elif score > top_three[2][0] and added_timestamp < top_three[2][2]:
+                    top_three = top_three[:2] + [(score, username, added_timestamp)]
 
         return (top_three, user_rank)
 
 
     def create_table_user_scores(self):
-        self.db.execute("CREATE TABLE IF NOT EXISTS user_scores (character_index text, usernames text[], scores integer[])")
+        self.db.execute("CREATE TABLE IF NOT EXISTS user_scores (character_index text, usernames text[], scores integer[], users_added timestamp[])")
 
 
     def create_table_time_since_last_post(self):
@@ -58,8 +59,8 @@ class Database:
 
     def create_character_index_and_insert_new_user_score(self, character_index, username):
         insert_sql = f"""
-            INSERT INTO user_scores (character_index, usernames, scores)
-            VALUES ('{character_index}', ARRAY['{username}'], ARRAY[1])
+            INSERT INTO user_scores (character_index, usernames, scores, users_added)
+            VALUES ('{character_index}', ARRAY['{username}'], ARRAY[1], ARRAY[NOW()])
         """
         self.db.execute(insert_sql)
 
@@ -87,7 +88,8 @@ class Database:
         score, score_index = self.user_score_and_index(username, usernames, scores)
         update_sql =f"""
             UPDATE user_scores
-            SET scores[{score_index}] = {score + 1}
+            SET scores[{score_index}] = {score + 1},
+                users_added[{score_index}] = NOW()
             WHERE character_index='{character_index}'
         """ 
         self.db.execute(update_sql)
@@ -96,8 +98,9 @@ class Database:
     def add_new_user_to_character_index(self, character_index, username):
         update_sql = f"""
             UPDATE user_scores
-            SET usernames = array_append(usernames, '{username}')
-            SET scores = array_append(scores, 1)
+            SET usernames = array_append(usernames, '{username}'),
+                scores = array_append(scores, 1),
+                users_added = array_append(users_added, NOW())
             WHERE character_index='{character_index}'
         """
         self.db.execute(update_sql)
