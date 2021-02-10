@@ -39,7 +39,7 @@ class Database:
     def create_table_time_since_last_post(self):
         self.db.execute("CREATE TABLE IF NOT EXISTS time_since_last_post (id integer, last_post_time timestamp)")
         if self.db.execute("SELECT * FROM time_since_last_post").first() is None:
-            self.db.execute("INSERT INTO time_since_last_post (id, last_post_time) VALUES(1, NOW()::timestamp)")
+            self.db.execute("INSERT INTO time_since_last_post (id, last_post_time) VALUES(1, NOW() - INTERVAL '15 minutes')")
 
 
     def can_make_new_post(self):

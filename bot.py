@@ -34,7 +34,7 @@ class StarWarsBot:
 
 
     def handle_user_comment(self, comment, username):
-        character_index = username[:2].lower()
+        character_index = username[:2]
 
         if character_index not in self.cached_character_indexs:
             self.db.create_character_index_and_insert_new_user_score(character_index, username)
