@@ -102,7 +102,7 @@ class Database:
             UPDATE user_scores
             SET usernames = array_append(usernames, '{username}'),
                 scores = array_append(scores, 1),
-                users_added = array_append(users_added, NOW())
+                users_added = array_append(users_added, NOW()::timestamp)
             WHERE character_index='{character_index}'
         """
         self.db.execute(update_sql)
