@@ -12,6 +12,8 @@ USERNAME = os.environ["REDDIT_USERNAME"]
 
 DATABASE_URL = os.environ["DATABASE_URL"]
 
+POSTING_ENABLED = os.environ["POSTING_ENABLED"] == "y"
+
 SUBREDDIT_NAME = "TheMandalorianTV"
 
 SEARCH_TERM = "This is the way"

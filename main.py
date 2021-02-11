@@ -10,6 +10,7 @@ if __name__ == "__main__":
         config.USER_AGENT,
         config.USERNAME, 
         config.DATABASE_URL
+        config.POSTING_ENABLED
     )
     
     bot.run(config.SUBREDDIT_NAME, config.SEARCH_TERM)

@@ -7,7 +7,7 @@ from database import Database
 
 
 class StarWarsBot:
-    def __init__(self, client_id, client_secret, password, user_agent, username, db_url):
+    def __init__(self, client_id, client_secret, password, user_agent, username, db_url, posting_enabled):
         self.reddit_instance = praw.Reddit(
             client_id=client_id,
             client_secret=client_secret,
@@ -17,6 +17,7 @@ class StarWarsBot:
         )
         
         self.username = username
+        self.posting_enabled = posting_enabled
 
         self.db = Database(db_url)
         self.cached_character_indexs = self.db.character_indexs()
@@ -53,11 +54,11 @@ class StarWarsBot:
                 print(f"new user {username}")
                 sys.stdout.flush()
 
-#         if self.db.can_make_new_post():
-#             self.make_new_post(character_index, username, comment)
-#             self.db.update_time_since_last_post()
-#             print(f"Made post to user {username}")
-#             sys.stdout.flush()
+         if self.posting_enabled and self.db.can_make_new_post():
+             self.make_new_post(character_index, username, comment)
+             self.db.update_time_since_last_post()
+             print(f"Made post to user {username}")
+             sys.stdout.flush()
 
     def make_new_post(self, character_index, username, comment):
         _, usernames, scores, user_timestamps = self.db.user_data(character_index, username)
