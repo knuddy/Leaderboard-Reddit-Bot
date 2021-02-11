@@ -6,6 +6,7 @@ class Database:
         self.db = create_engine(db_string)
         self.create_table_user_scores()
         self.create_table_time_since_last_post()
+        self.time_between_posts = time_between_posts
 
     def top_three_and_user_rank(self, user_score, user_added_timestamp):
         top_three = [
@@ -43,9 +44,9 @@ class Database:
 
 
     def can_make_new_post(self):
-        select_sql = """
+        select_sql = f"""
             SELECT * FROM time_since_last_post
-            WHERE last_post_time > NOW() - INTERVAL '15 minutes'
+            WHERE last_post_time > NOW() - INTERVAL '{self.time_between_posts} minutes'
         """
         return self.db.execute(select_sql).first() is None
 
