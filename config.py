@@ -14,6 +14,8 @@ DATABASE_URL = os.environ["DATABASE_URL"]
 
 POSTING_ENABLED = os.environ["POSTING_ENABLED"] == "y"
 
+TIME_BETWEEN_POSTS = os.environ["TIME_BETWEEN_POSTS"]
+
 SUBREDDIT_NAME = "TheMandalorianTV"
 
 SEARCH_TERM = "This is the way"

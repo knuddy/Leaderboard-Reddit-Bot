@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import create_engine
 
 class Database:
-    def __init__(self, db_string):
+    def __init__(self, db_string, time_between_posts=15):
         self.db = create_engine(db_string)
         self.create_table_user_scores()
         self.create_table_time_since_last_post()

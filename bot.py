@@ -7,7 +7,7 @@ from database import Database
 
 
 class StarWarsBot:
-    def __init__(self, client_id, client_secret, password, user_agent, username, db_url, posting_enabled):
+    def __init__(self, client_id, client_secret, password, user_agent, username, db_url, posting_enabled, time_between_posts):
         self.reddit_instance = praw.Reddit(
             client_id=client_id,
             client_secret=client_secret,
@@ -19,7 +19,7 @@ class StarWarsBot:
         self.username = username
         self.posting_enabled = posting_enabled
 
-        self.db = Database(db_url)
+        self.db = Database(db_url, time_between_posts)
         self.cached_character_indexs = self.db.character_indexs()
 
     def run(self, subreddit_name, search_term):
