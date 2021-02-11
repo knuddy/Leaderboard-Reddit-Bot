@@ -54,7 +54,7 @@ class StarWarsBot:
                 print(f"new user {username}")
                 sys.stdout.flush()
 
-         if self.posting_enabled and self.db.can_make_new_post():
+        if self.posting_enabled and self.db.can_make_new_post():
              self.make_new_post(character_index, username, comment)
              self.db.update_time_since_last_post()
              print(f"Made post to user {username}")
