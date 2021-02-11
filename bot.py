@@ -30,13 +30,12 @@ class StarWarsBot:
             username = comment.author.name
 
             if username != self.username and re.search(search_term.lower(), comment_text_lower, re.IGNORECASE):
-                self.handle_user_comment(comment, username)
+                character_index = username[:2]
+                self.handle_user_comment(comment, username, character_index)
+                self.handle_user_post(comment, username, character_index, search_term)
 
 
-
-    def handle_user_comment(self, comment, username):
-        character_index = username[:2]
-
+    def handle_user_comment(self, comment, username, character_index):
         if character_index not in self.cached_character_indexs:
             self.db.create_character_index_and_insert_new_user_score(character_index, username)
             self.cached_character_indexs.append(character_index)
@@ -54,12 +53,18 @@ class StarWarsBot:
                 print(f"new user {username}")
                 sys.stdout.flush()
 
-        if self.posting_enabled and self.db.can_make_new_post():
+        
+    
+    def handle_user_post(self, comment, username, character_index, search_term):
+        comment_comparisons = [comment.body.lower() == st for st in [search_term.lower(), search_term.lower() + "."]]
+        
+        if self.posting_enabled and any(comment_comparisons) and self.db.can_make_new_post():
              self.make_new_post(character_index, username, comment)
              self.db.update_time_since_last_post()
              print(f"Made post to user {username}")
              sys.stdout.flush()
-
+            
+    
     def make_new_post(self, character_index, username, comment):
         _, usernames, scores, user_timestamps = self.db.user_data(character_index, username)
         user_score, user_index = self.db.user_score_and_index(username, usernames, scores)
