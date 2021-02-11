@@ -16,6 +16,6 @@ POSTING_ENABLED = os.environ["POSTING_ENABLED"] == "y"
 
 TIME_BETWEEN_POSTS = os.environ["TIME_BETWEEN_POSTS"]
 
-SUBREDDIT_NAME = "TheMandalorianTV"
+SUBREDDIT_NAME = "all"
 
 SEARCH_TERM = "This is the way"
