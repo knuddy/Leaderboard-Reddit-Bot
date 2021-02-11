@@ -25,7 +25,7 @@ class StarWarsBot:
     def run(self, subreddit_name, search_term):
         subreddit = self.reddit_instance.subreddit(subreddit_name)
 
-        for comment in subreddit.stream.comments():
+        for comment in subreddit.stream.comments(skip_existing=True):
             comment_text_lower = comment.body.lower()
             username = comment.author.name
 
