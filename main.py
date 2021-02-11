@@ -9,7 +9,7 @@ if __name__ == "__main__":
         config.PASSWORD,
         config.USER_AGENT,
         config.USERNAME, 
-        config.DATABASE_URL
+        config.DATABASE_URL,
         config.POSTING_ENABLED
     )
     
