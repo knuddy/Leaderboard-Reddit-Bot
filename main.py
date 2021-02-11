@@ -10,7 +10,7 @@ if __name__ == "__main__":
         config.USER_AGENT,
         config.USERNAME, 
         config.DATABASE_URL,
-        config.POSTING_ENABLED
+        config.POSTING_ENABLED,
         config.TIME_BETWEEN_POSTS
     )
     
