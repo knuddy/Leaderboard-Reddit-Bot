@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 from sqlalchemy import create_engine
 from . import user_scores, time_since_last_post, banned_from
@@ -20,16 +21,20 @@ class Database:
 
         for row in all_rows:
             for username, score, added_timestamp in zip(row[1], row[2], row[3]):
-                if score > user_score or (score == user_score and user_added_timestamp > added_timestamp): user_rank += 1
+                try:
+                    if score > user_score or (score == user_score and user_added_timestamp > added_timestamp): user_rank += 1
 
-                if score > top_three[0][0] or (score == top_three[0][0] and added_timestamp < top_three[0][2]):
-                    top_three = [(score, username, added_timestamp)] + top_three[:2]
-                    
-                elif score > top_three[1][0] or (score == top_three[1][0] and added_timestamp < top_three[1][2]):
-                    top_three =  top_three[:1] + [(score, username, added_timestamp)] + top_three[1:2]
-                    
-                elif score > top_three[2][0] or (score == top_three[2][0] and added_timestamp < top_three[2][2]):
-                    top_three = top_three[:2] + [(score, username, added_timestamp)]
+                    if score > top_three[0][0] or (score == top_three[0][0] and added_timestamp < top_three[0][2]):
+                        top_three = [(score, username, added_timestamp)] + top_three[:2]
+
+                    elif score > top_three[1][0] or (score == top_three[1][0] and added_timestamp < top_three[1][2]):
+                        top_three =  top_three[:1] + [(score, username, added_timestamp)] + top_three[1:2]
+
+                    elif score > top_three[2][0] or (score == top_three[2][0] and added_timestamp < top_three[2][2]):
+                        top_three = top_three[:2] + [(score, username, added_timestamp)]
+                except TypeError:
+                    print(f"user {username} score is corrupt.")
+                    sys.stdout.flush()
 
         return top_three, user_rank
 
