@@ -1,4 +1,5 @@
 import praw
+import prawcore.exceptions
 import re
 import sys
 from post_template import POST_TEMPLATE
@@ -52,10 +53,14 @@ class StarWarsBot:
 
     def handle_user_post(self, comment, username, character_index, search_term):
         comment_comparisons = [comment.body.lower() == st for st in [search_term.lower(), search_term.lower() + "."]]
-        
-        if self.posting_enabled and any(comment_comparisons) and self.db.can_make_new_post(self.time_between_posts):
+
+        can_post = (self.posting_enabled and
+                    any(comment_comparisons) and
+                    self.db.can_make_new_post(self.time_between_posts) and
+                    self.db.is_banned_from_subreddit(comment.subreddit) is False)
+
+        if can_post:
              self.make_new_post(character_index, username, comment)
-             self.db.update_time_since_last_post()
              print(f"Made post to user {username}")
              sys.stdout.flush()
 
@@ -69,8 +74,14 @@ class StarWarsBot:
             top_three[2][1], top_three[2][0],
             user_rank, username, user_score
         )
+        try:
+            comment.reply(post_reply)
+            self.db.update_time_since_last_post()
+        except prawcore.exceptions.Forbidden:
+            self.db.add_subreddit_to_ban_list(comment.subreddit)
+            print(f"banned from commenting on r/{comment.subreddit}!")
+            sys.stdout.flush()
 
-        comment.reply(post_reply)
 
         
         
