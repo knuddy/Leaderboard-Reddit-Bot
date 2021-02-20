@@ -1,7 +1,6 @@
 import praw
 import re
 import sys
-from datetime import datetime, timedelta
 from post_template import POST_TEMPLATE
 from database import Database
 
@@ -18,9 +17,8 @@ class StarWarsBot:
         
         self.username = username
         self.posting_enabled = posting_enabled
-
-        self.db = Database(db_url, time_between_posts)
-        self.cached_character_indexs = self.db.character_indexs()
+        self.time_between_posts = time_between_posts
+        self.db = Database(db_url)
 
     def run(self, subreddit_name, search_term):
         subreddit = self.reddit_instance.subreddit(subreddit_name)
@@ -37,34 +35,33 @@ class StarWarsBot:
     def handle_user_comment(self, comment, username):
         character_index = username[:2]
 
-        if character_index not in self.cached_character_indexs:
-            self.db.create_character_index_and_insert_new_user_score(character_index, username)
-            self.cached_character_indexs.append(character_index)
+        if self.db.character_index_exists(character_index) is False:
+            self.db.create_character_index(character_index)
+            self.db.insert_new_user(character_index, username)
             print(f"new index {character_index} and new user {username}")
             sys.stdout.flush()
         else:
-            row = self.db.user_data(character_index, username)
             
-            if row is not None:
-                self.db.update_user_score(character_index, username, row[1], row[2])
+            if user_data := self.db.get_user_data(character_index, username) is not None:
+                user_index, user_score, _ = user_data
+                self.db.update_user_score(character_index, user_index, user_score)
                 print(f"updated {username} score")
                 sys.stdout.flush()
             else:
-                self.db.add_new_user_to_character_index(character_index, username)
+                self.db.insert_new_user(character_index, username)
                 print(f"new user {username}")
                 sys.stdout.flush()
 
-        if self.posting_enabled and self.db.can_make_new_post():
+        if self.posting_enabled and self.db.can_make_new_post(self.time_between_posts):
              self.make_new_post(character_index, username, comment)
              self.db.update_time_since_last_post()
              print(f"Made post to user {username}")
              sys.stdout.flush()
 
-    def make_new_post(self, character_index, username, comment):
-        _, usernames, scores, user_timestamps = self.db.user_data(character_index, username)
-        user_score, user_index = self.db.user_score_and_index(username, usernames, scores)
 
-        top_three, user_rank = self.db.top_three_and_user_rank(user_score, user_timestamps[user_index - 1])
+    def make_new_post(self, character_index, username, comment):
+        user_score, user_index , user_timestamp = self.db.get_user_data(character_index, username)
+        top_three, user_rank = self.db.top_three_and_user_rank(user_score, user_timestamp)
 
         post_reply = POST_TEMPLATE.format(
             top_three[0][1], top_three[0][0],

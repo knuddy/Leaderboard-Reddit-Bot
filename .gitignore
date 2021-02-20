@@ -4,3 +4,4 @@ venv/
 *.bat
 *.vscode
 check_db_records.py
+*.idea
