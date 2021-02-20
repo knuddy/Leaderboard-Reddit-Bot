@@ -12,6 +12,6 @@ POST_TEMPLATE = """##This Is The Way Leaderboard
 
 ---
 
-^(^beep ^boop ^I ^am ^a ^bot ^and ^this ^action ^was ^preformed ^automatically.)
+^(^beep ^boop ^I ^am ^a ^bot ^and ^this ^action ^was ^performed ^automatically.)
 
 """
