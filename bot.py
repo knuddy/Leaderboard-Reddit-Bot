@@ -29,10 +29,10 @@ class StarWarsBot:
 
             if username != self.username and re.search(search_term.lower(), comment_text_lower, re.IGNORECASE):
                 character_index = username[:2]
-                self.handle_user_comment(comment, username, character_index)
+                self.handle_user_comment(username, character_index)
                 self.handle_user_post(comment, username, character_index, search_term)
 
-    def handle_user_comment(self, comment, username, character_index):
+    def handle_user_comment(self, username, character_index):
         if self.db.character_index_exists(character_index) is False:
             self.db.create_character_index(character_index)
             self.db.insert_new_user(character_index, username)
@@ -53,7 +53,7 @@ class StarWarsBot:
     def handle_user_post(self, comment, username, character_index, search_term):
         comment_comparisons = [comment.body.lower() == st for st in [search_term.lower(), search_term.lower() + "."]]
         
-        if self.posting_enabled and any(comment_comparisons) and self.db.can_make_new_post():
+        if self.posting_enabled and any(comment_comparisons) and self.db.can_make_new_post(self.time_between_posts):
              self.make_new_post(character_index, username, comment)
              self.db.update_time_since_last_post()
              print(f"Made post to user {username}")
