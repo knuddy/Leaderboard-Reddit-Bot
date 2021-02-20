@@ -1,5 +1,5 @@
-import create
-import insert
-import select_
-import update
+from . import create
+from . import insert
+from . import select_
+from . import update
 
