@@ -61,8 +61,6 @@ class StarWarsBot:
 
         if can_post:
              self.make_new_post(character_index, username, comment)
-             print(f"Made post to user {username}")
-             sys.stdout.flush()
 
     def make_new_post(self, character_index, username, comment):
         user_score, user_index , user_timestamp = self.db.get_user_data(character_index, username)
@@ -77,6 +75,8 @@ class StarWarsBot:
         try:
             comment.reply(post_reply)
             self.db.update_time_since_last_post()
+            print(f"Made post to user {username}")
+            sys.stdout.flush()
         except prawcore.exceptions.Forbidden:
             self.db.add_subreddit_to_ban_list(comment.subreddit)
             print(f"banned from commenting on r/{comment.subreddit}!")
