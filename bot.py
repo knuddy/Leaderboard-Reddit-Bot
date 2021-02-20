@@ -39,8 +39,8 @@ class StarWarsBot:
             print(f"new index {character_index} and new user {username}")
             sys.stdout.flush()
         else:
-            
-            if user_data := self.db.get_user_data(character_index, username) is not None:
+            user_data = self.db.get_user_data(character_index, username)
+            if user_data is not None:
                 user_index, user_score, _ = user_data
                 self.db.update_user_score(character_index, user_index, user_score)
                 print(f"updated {username} score")
