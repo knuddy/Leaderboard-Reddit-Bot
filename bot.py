@@ -7,7 +7,7 @@ from database import Database
 
 
 class StarWarsBot:
-    def __init__(self, client_id, client_secret, password, user_agent, username, db_url, posting_enabled, time_between_posts):
+    def __init__(self, client_id, client_secret, password, user_agent, username, db_url, posting_enabled, time_between_posts, time_between_fixes):
         self.reddit_instance = praw.Reddit(
             client_id=client_id,
             client_secret=client_secret,
@@ -19,6 +19,7 @@ class StarWarsBot:
         self.username = username
         self.posting_enabled = posting_enabled
         self.time_between_posts = time_between_posts
+        self.time_between_fixes = time_between_fixes
         self.db = Database(db_url)
 
     def run(self, subreddit_name, search_term):
@@ -32,6 +33,7 @@ class StarWarsBot:
                 character_index = username[:2]
                 self.handle_user_comment(username, character_index)
                 self.handle_user_post(comment, username, character_index, search_term)
+                self.handle_user_fixes()
 
     def handle_user_comment(self, username, character_index):
         if self.db.character_index_exists(character_index) is False:
@@ -81,6 +83,10 @@ class StarWarsBot:
             self.db.add_subreddit_to_ban_list(comment.subreddit)
             print(f"banned from commenting on r/{comment.subreddit}!")
             sys.stdout.flush()
+
+    def handle_user_fixes(self):
+        if self.db.can_fix_corrupt_users(self.time_between_fixes):
+            self.db.fix_corrupt_users()
 
 
         

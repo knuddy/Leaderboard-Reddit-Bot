@@ -1,6 +1,6 @@
-def time_since_last_post(db):
+def no_entries(db):
     select_sql = "SELECT * FROM time_since_last_post"
-    return db.execute(select_sql).first()
+    return db.execute(select_sql).first() is None
 
 
 def can_make_new_post(db, time_between_posts):
