@@ -44,7 +44,7 @@ class StarWarsBot:
         else:
             user_data = self.db.get_user_data(character_index, username)
             if user_data is not None:
-                user_index, user_score, _ = user_data
+                user_score, user_index, _ = user_data
                 self.db.update_user_score(character_index, user_index, user_score)
                 print(f"updated {username} score")
                 sys.stdout.flush()
@@ -65,7 +65,7 @@ class StarWarsBot:
              self.make_new_post(character_index, username, comment)
 
     def make_new_post(self, character_index, username, comment):
-        user_score, user_index , user_timestamp = self.db.get_user_data(character_index, username)
+        user_score, user_index, user_timestamp = self.db.get_user_data(character_index, username)
         top_three, user_rank = self.db.top_three_and_user_rank(user_score, user_timestamp)
 
         post_reply = POST_TEMPLATE.format(
