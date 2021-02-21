@@ -20,6 +20,6 @@ TIME_BETWEEN_FIXES = os.environ["TIME_BETWEEN_FIXES"]
 
 SUBREDDIT_NAME = "all"
 
-SEARCH_TERM = "This is the way "
+SEARCH_TERM = "This is the way"
 
 
