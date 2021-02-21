@@ -107,6 +107,8 @@ class Database:
             character_index = username[:2]
             user_index, _, __ = self.db.get_user_data(character_index, username)
             self.update_user_score(character_index, user_index, 0)
+            print(f"Fixed corrupted user '{username}' data")
+            sys.stdout.flush()
 
         corrupt_users.update.clear_corrupt_users(self.db)
         self._update_time_since_last_fix()
