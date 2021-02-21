@@ -105,7 +105,7 @@ class Database:
 
         for username in list_corrupt_users:
             character_index = username[:2]
-            user_index, _, __ = self.db.get_user_data(character_index, username)
+            user_index, _, __ = self.get_user_data(character_index, username)
             self.update_user_score(character_index, user_index, 0)
             print(f"Fixed corrupted user '{username}' data")
             sys.stdout.flush()
