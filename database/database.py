@@ -36,8 +36,8 @@ class Database:
                     if self._has_user_been_added_to_corrupt_list(username) is False:
                         self._add_user_to_corrupt_list(username)
 
-                    print(f"user {username} score is corrupt.")
-                    sys.stdout.flush()
+                        print(f"user {username} score is corrupt. Adding to corrupt list")
+                        sys.stdout.flush()
 
         return top_three, user_rank
 
