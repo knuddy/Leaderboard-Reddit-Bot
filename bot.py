@@ -1,9 +1,10 @@
 import praw
-import prawcore.exceptions
 import re
 import sys
 from post_template import POST_TEMPLATE
 from database import Database
+from prawcore.exceptions import Forbidden
+
 
 
 class StarWarsBot:
@@ -56,16 +57,18 @@ class StarWarsBot:
     def handle_user_post(self, comment, username, character_index, search_term):
         comment_comparisons = [comment.body.lower() == st for st in [search_term.lower(), search_term.lower() + "."]]
 
-        can_post = (self.posting_enabled and
-                    any(comment_comparisons) and
-                    self.db.can_make_new_post(self.time_between_posts) and
-                    self.db.is_banned_from_subreddit(comment.subreddit) is False)
+        can_post = all([
+                any(comment_comparisons),
+                self.posting_enabled,
+                self.db.can_make_new_post(self.time_between_posts),
+                self.db.is_banned_from_subreddit(comment.subreddit) is False
+            ])
 
         if can_post:
              self.make_new_post(character_index, username, comment)
 
     def make_new_post(self, character_index, username, comment):
-        user_score, user_index, user_timestamp = self.db.get_user_data(character_index, username)
+        user_score, _, user_timestamp = self.db.get_user_data(character_index, username)
         top_three, user_rank = self.db.top_three_and_user_rank(user_score, user_timestamp)
 
         post_reply = POST_TEMPLATE.format(
@@ -79,7 +82,7 @@ class StarWarsBot:
             self.db.update_time_since_last_post()
             print(f"Made post to user {username}")
             sys.stdout.flush()
-        except prawcore.exceptions.Forbidden:
+        except Forbidden:
             self.db.add_subreddit_to_ban_list(comment.subreddit)
             print(f"banned from commenting on r/{comment.subreddit}!")
             sys.stdout.flush()
